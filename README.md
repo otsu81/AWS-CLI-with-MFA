@@ -35,3 +35,10 @@ role_arn = arn:aws:iam::<CHILD ACCOUNT NUMBER>:role/adminMFA-roleswitch
 mfa_serial = arn:aws:iam::<MAIN ACCOUNT NUMBER>:mfa/adminUser
 source_profile = cli
 ```
+
+## Policies
+This structure is based around two policies: the admin group MFA requirement policy, and the role policy in the child account. 
+
+The **admin policy** allows an attached user admin privileges under the condition that there is MFA present. If there is no MFA attached, the user cannot do anything but go into IAM and add one or modify a previous one attached to the user. 
+
+The **role policy** is necessary in every account where CLI access is needed, since it’s only possible to enforce MFA in CLI when assuming a role. The role policy has a trust to the main account and enforces MFA. 

@@ -1,0 +1,67 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAssumingRoles",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:MultiFactorAuthPresent": false
+                }
+            }
+        },
+        {
+            "Sid": "ForceMFAForAdmin",
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:MultiFactorAuthPresent": true
+                }
+            }
+        },
+        {
+            "Sid": "AllowUsersToCreateEnableResyncDeleteTheirOwnVirtualMFADevice",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateVirtualMFADevice",
+                "iam:EnableMFADevice",
+                "iam:ResyncMFADevice",
+                "iam:DeleteVirtualMFADevice"
+            ],
+            "Resource": [
+                "arn:aws:iam::<YOUR MAIN ACCOUNT NUMBER>:mfa/${aws:username}",
+                "arn:aws:iam:: <YOUR MAIN ACCOUNT NUMBER>:user/${aws:username}"
+            ]
+        },
+        {
+            "Sid": "AllowUsersToDeactivateTheirOwnVirtualMFADevice",
+            "Effect": "Allow",
+            "Action": [
+                "iam:DeactivateMFADevice"
+            ],
+            "Resource": [
+                "arn:aws:iam:: <YOUR MAIN ACCOUNT NUMBER>:mfa/${aws:username}",
+                "arn:aws:iam:: <YOUR MAIN ACCOUNT NUMBER>:user/${aws:username}"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:MultiFactorAuthPresent": true
+                }
+            }
+        },
+        {
+            "Sid": "AllowUsersToListMFADevicesandUsersForConsole",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListMFADevices",
+                "iam:ListVirtualMFADevices",
+                "iam:ListUsers"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
